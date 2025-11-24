@@ -7,7 +7,13 @@ import authRoutes from "./routes/auth.js";
 dotenv.config();
 const app = express();
 
-app.use(cors());
+// Correct CORS settings for Render + Netlify
+app.use(cors({
+  origin: ["https://stitchpix.netlify.app"],
+  methods: ["GET", "POST"],
+  credentials: true
+}));
+
 app.use(express.json({ limit: "20mb" }));
 
 // Connect MongoDB
@@ -16,7 +22,9 @@ connectDB();
 // Routes
 app.use("/api/auth", authRoutes);
 
-// Start Server
-app.listen(5000, () =>
-  console.log("Backend Server Running on http://localhost:5000")
+// IMPORTANT: Use Render port
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () =>
+  console.log(`Backend running on port ${PORT}`)
 );
